@@ -1,4 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using ToDoApi.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("SqliteConnection");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'SqliteConnection' is not defined.");
+}
+
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlite(connectionString));
 
 
 var app = builder.Build();
