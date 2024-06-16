@@ -38,5 +38,36 @@ app.MapPost("api/createToDo", async (AppDbContext ctx, ToDo toDo) =>
     return Results.Created($"api/createToDo/{toDo.Id}", toDo);
 });
 
+app.MapPut("api/todos/{id}", async (AppDbContext ctx, int id, ToDo todo) =>
+{
+    var toDoModel = await ctx.toDos.FirstOrDefaultAsync(t => t.Id == id);
+
+    if(toDoModel == null)
+    {
+        return Results.NotFound();
+    }
+
+    toDoModel.ToDoName = todo.ToDoName;
+
+    await ctx.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+app.MapDelete("api/todos/{id}", async (AppDbContext ctx, int id) =>
+{
+    var toDoModel = await ctx.toDos.FirstOrDefaultAsync(t => t.Id == id);
+
+    if (toDoModel == null)
+    {
+        return Results.NotFound();
+    }
+
+    ctx.toDos.Remove(toDoModel);
+
+    await ctx.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 
 app.Run();
