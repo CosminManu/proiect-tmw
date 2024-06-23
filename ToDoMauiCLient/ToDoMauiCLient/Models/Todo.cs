@@ -15,13 +15,10 @@ namespace ToDoMauiCLient.Models
             get => _id;
             set
             {
-                if (_id == value)
-                {
-                    return;
-                }
+                if (_id == value) { return; }
                 _id = value;
 
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("id"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Id)));
             }
         }
 
@@ -34,7 +31,7 @@ namespace ToDoMauiCLient.Models
             {   if(_todoname == value) { return; } 
                 _todoname = value;
 
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"{ToDoName}"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ToDoName)));
             }
         }
 
