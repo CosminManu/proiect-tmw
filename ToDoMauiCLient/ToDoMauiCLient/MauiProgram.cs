@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using ToDoMauiCLient.DataServices;
 
 namespace ToDoMauiCLient
 {
@@ -15,6 +16,7 @@ namespace ToDoMauiCLient
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<IRestDataService, RestDataService>();
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif

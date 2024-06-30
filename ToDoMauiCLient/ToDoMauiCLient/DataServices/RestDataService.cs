@@ -113,9 +113,34 @@ namespace ToDoMauiCLient.DataServices
             return todoList;
         }
 
-        public Task UpdateToDoAsync(Todo todo)
+        public async Task UpdateToDoAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                Debug.WriteLine("---> No internet acess");
+                return;
+            }
+
+            try
+            {
+                string jsonToDo = JsonSerializer.Serialize<Todo>(todo, _serializerOptions);
+                StringContent content = new StringContent(jsonToDo, Encoding.UTF8, "application/json");
+                HttpResponseMessage resp = await _httpClient.PutAsync($"{_url}/todo/{todo.Id}", content);
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine("Succesfully created toDo");
+                }
+                else
+                {
+                    Debug.WriteLine("--> Non http 2xx response");
+                }
+
+            } catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception: {ex.Message}");
+            }
+            return;
         }
     }
 }
