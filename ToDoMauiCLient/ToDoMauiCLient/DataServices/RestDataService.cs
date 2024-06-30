@@ -27,14 +27,58 @@ namespace ToDoMauiCLient.DataServices
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
         }
-        public Task AddToDoAsync(Todo todo)
+        public async Task AddToDoAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                Debug.WriteLine("---> No internet acess");
+                return;
+            }
+
+            try
+            {
+                string jsonToDo = JsonSerializer.Serialize<Todo>(todo, _serializerOptions);
+                StringContent content = new StringContent(jsonToDo, Encoding.UTF8, "application/json");
+                HttpResponseMessage resp = await _httpClient.PostAsync($"{_url}/todo", content);
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine("Succesfully created toDo");
+                }else
+                {
+                    Debug.WriteLine("--> Non http 2xx response");
+                }
+
+            } catch(Exception ex)
+            {
+                Debug.WriteLine($"Exception: {ex.Message}");
+            }
         }
 
-        public Task DeleteToDoAsync(int id)
+        public async Task DeleteToDoAsync(int id)
         {
-            throw new NotImplementedException();
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                Debug.WriteLine("---> No internet acess");
+                return;
+            }
+            try
+            {
+                HttpResponseMessage resp = await _httpClient.DeleteAsync($"{_url}/todo/{id}");
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine("Succesfully created toDo");
+                }
+                else
+                {
+                    Debug.WriteLine("--> Non http 2xx response");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception: {ex.Message}");
+            }
         }
 
         public async Task<List<Todo>> GetAllToDosAsync()
@@ -54,7 +98,6 @@ namespace ToDoMauiCLient.DataServices
                 if (resp.IsSuccessStatusCode)
                 {
                     string content = await resp.Content.ReadAsStringAsync();
-
                     todoList = JsonSerializer.Deserialize<List<Todo>>(content, _serializerOptions);
                 }
                 else
