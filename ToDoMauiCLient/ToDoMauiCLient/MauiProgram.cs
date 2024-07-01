@@ -17,8 +17,9 @@ namespace ToDoMauiCLient
                 });
 
             builder.Services.AddSingleton<IRestDataService, RestDataService>();
+            builder.Services.AddSingleton<MainPage>();
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
